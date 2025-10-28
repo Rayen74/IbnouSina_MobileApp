@@ -136,6 +136,12 @@ export default function Login() {
               Create your account here
             </Text>
           </Pressable>
+
+          <Pressable onPress={() => router.push('/forgot-password')}>
+            <Text className="mt-2 text-sm text-center text-blue-600">
+              Forgot Password 
+            </Text>
+          </Pressable>
         </View>
 
         {/* Modal */}
