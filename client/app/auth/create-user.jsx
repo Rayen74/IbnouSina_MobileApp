@@ -169,7 +169,7 @@ export default function CreateUser() {
             </View>
 
             {/* Back to Login */}
-            <Pressable onPress={() => router.push('/login')}>
+            <Pressable onPress={() => router.push('/auth/login')}>
               <Text className="mt-2 text-sm text-center text-blue-600">
                 Already have an account? Log in
               </Text>

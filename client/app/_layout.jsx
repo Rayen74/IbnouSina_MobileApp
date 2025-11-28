@@ -1,14 +1,18 @@
-// app/_layout.jsx
+// client/app/_layout.jsx
 import { Stack } from 'expo-router';
 import '../global.css';
 
 export default function RootLayout() {
   return (
     <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="index" />
-        <Stack.Screen name="login" />
-        <Stack.Screen name="create-user" />
-        <Stack.Screen name="forgot-password" />
+      {/* Auth Module */}
+      <Stack.Screen name="auth" />
+
+      {/* Patient Module */}
+      <Stack.Screen name="patient" />
+
+      {/* Catch 404 */}
+      <Stack.Screen name="+not-found" />
     </Stack>
   );
 }

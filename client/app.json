@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "MyApp2",
-    "slug": "MyApp2",
+    "name": "IbnouSinaApp",
+    "slug": "IbnouSinaApp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

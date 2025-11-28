@@ -1,4 +1,4 @@
-// app/login.jsx
+// app/auth/login.jsx
 import React, { useState } from 'react';
 import {
   View,
@@ -11,7 +11,7 @@ import {
 import { MaterialIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Animatable from 'react-native-animatable';
-import { useRouter, Link } from 'expo-router';
+import { useRouter } from 'expo-router';
 
 export default function Login() {
   const router = useRouter();
@@ -28,43 +28,45 @@ export default function Login() {
   const validatePassword = (p) => p.length >= 6;
 
   const handleLogin = async () => {
-    // Validation
     if (!email || !password) {
-      setModalMessage('Please fill in both fields');
-      setIsSuccess(false);
-      setModalVisible(true);
+      showModal('Please fill in both fields', false);
       return;
     }
     if (!validateEmail(email)) {
-      setModalMessage('Please enter a valid email address');
-      setIsSuccess(false);
-      setModalVisible(true);
+      showModal('Please enter a valid email address', false);
       return;
     }
     if (!validatePassword(password)) {
-      setModalMessage('Password must be at least 6 characters long');
-      setIsSuccess(false);
-      setModalVisible(true);
+      showModal('Password must be at least 6 characters long', false);
       return;
     }
 
-    // Mock login (replace with API call)
     setIsLoading(true);
     await new Promise((r) => setTimeout(r, 800));
     setIsLoading(false);
 
-    // Success
-    setModalMessage('Login successful!');
-    setIsSuccess(true);
-    setModalVisible(true);
+    showModal('Login successful!', true);
     setEmail('');
     setPassword('');
+  };
+
+  const showModal = (msg, success) => {
+    setModalMessage(msg);
+    setIsSuccess(success);
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+    if (isSuccess) {
+      router.replace('/patient/acceuil-patient');
+    }
   };
 
   return (
     <SafeAreaView className="flex-1 bg-gray-100">
       <View className="items-center justify-center flex-1 p-4">
-        <View className="w-full max-w-lg p-6 bg-white rounded-lg shadow-lg">
+        <View className="w-full max-w-lg p-6 rounded-lg shadow-lg bg white">
           <MaterialIcons
             name="local-hospital"
             size={48}
@@ -101,10 +103,7 @@ export default function Login() {
               autoCapitalize="none"
               autoCorrect={false}
             />
-            <Pressable
-              onPress={() => setShowPassword(!showPassword)}
-              style={{ marginRight: 12 }}
-            >
+            <Pressable onPress={() => setShowPassword(!showPassword)} style={{ marginRight: 12 }}>
               <MaterialIcons
                 name={showPassword ? 'visibility-off' : 'visibility'}
                 size={24}
@@ -123,35 +122,41 @@ export default function Login() {
               {isLoading ? (
                 <ActivityIndicator color="#fff" />
               ) : (
-                <Text className="text-base font-semibold text-center text-white">
-                  Login
-                </Text>
+                <Text className="text-base font-semibold text-center text-white">Login</Text>
               )}
             </Pressable>
           </View>
 
           {/* Links */}
-          <Pressable onPress={() => router.push('/create-user')}>
+          <Pressable onPress={() => router.push('/auth/create-user')}>
             <Text className="mt-2 text-sm text-center text-blue-600">
               Create your account here
             </Text>
           </Pressable>
 
-          <Pressable onPress={() => router.push('/forgot-password')}>
-            <Text className="mt-2 text-sm text-center text-blue-600">
-              Forgot Password 
+          <Pressable onPress={() => router.push('/auth/forgot-password')}>
+            <Text class30 className="mt-2 text-sm text-center text-blue-600">
+              Forgot Password
             </Text>
           </Pressable>
         </View>
 
-        {/* Modal */}
+        {/* MODAL – FIXED BLACK FLASH */}
         <Modal
           animationType="fade"
           transparent
           visible={modalVisible}
-          onRequestClose={() => setModalVisible(false)}
+          onRequestClose={closeModal}
         >
-          <View className="items-center justify-center flex-1 bg-black bg-opacity-50">
+          {/* Semi-transparent overlay */}
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: 'rgba(0, 0, 0, 0.5)', // ← THIS FIXES THE FLASH
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
             <View className="w-4/5 max-w-sm p-6 bg-white rounded-lg shadow-lg">
               <Animatable.View animation="zoomIn" duration={500} className="items-center mb-4">
                 <MaterialIcons
@@ -160,13 +165,12 @@ export default function Login() {
                   color={isSuccess ? '#22c55e' : '#ef4444'}
                 />
               </Animatable.View>
+
               <Text className="mb-4 text-lg font-semibold text-center text-gray-800">
                 {modalMessage}
               </Text>
-              <Pressable
-                className="p-3 bg-blue-600 rounded-lg"
-                onPress={() => setModalVisible(false)}
-              >
+
+              <Pressable className="p-3 bg-blue-600 rounded-lg" onPress={closeModal}>
                 <Text className="font-semibold text-center text-white">OK</Text>
               </Pressable>
             </View>
